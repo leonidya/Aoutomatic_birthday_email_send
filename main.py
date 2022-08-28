@@ -17,7 +17,7 @@ def send_email():
         connection.login(user=MY_EMAIL, password=PASSWORD)
         connection.sendmail(
             from_addr=MY_EMAIL,
-            to_addrs="ENTER SENDER EMAIL",
+            to_addrs=sender_email,
             msg=f"Subject: Happy birthday {name} \n\n {new_text}"
         )
 
@@ -39,8 +39,8 @@ while on:
 
 # 2. Check if today matches a birthday in the birthdays.csv
 now = dt.datetime.now()
-today_date = dt.datetime(year=now.year,month=now.month,day=now.day)
-check_date = dt.datetime(year=1988, month=12, day=6)
+today_date = dt.datetime(month=now.month,day=now.day)
+check_date = dt.datetime(month=12, day=6)
 
 letter = []
 with open ("letter_templates/letter_1.txt", mode="r") as txt:
@@ -56,10 +56,11 @@ with open ("letter_templates/letter_3.txt", mode="r") as txt:
 
 read_file = pd.read_csv(PATH_OF_BIRTHDAYS_CSV, index_col=0)
 for (index, row) in read_file.iterrows():
-    if dt.datetime(row.year, row.month, row.day) == check_date:
+    if dt.datetime(row.month, row.day) == check_date:
         text = random.choice(letter)
         new_text = text.replace("[NAME]", row.name)
         name = row.name
+        sender_email = row.email
         print(new_text)
         send_email()
 
